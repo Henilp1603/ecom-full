@@ -1,0 +1,47 @@
+import mongoose from "mongoose";
+
+
+var orderSchema = new mongoose.Schema(
+  {
+    products: [
+      {
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+        },
+        productPrice:Number,
+        count: Number,
+      },
+    ],
+    paymentIntent: {},
+    orderStatus: {
+      type: String,
+      default: "Not Processed",
+      enum: [
+        "Not Processed",
+        "Cash on Delivery",
+        "Processing",
+        "Dispatched",
+        "Cancelled",
+        "Delivered",
+      ],
+    },
+    orderby: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    dateOrdered:{
+        type:Date,
+        default:Date.now()
+    },
+    totalPrice:{
+        type:Number
+    }
+  },
+  {
+    timestamps: true,
+  }
+);
+
+//Export the model
+export default mongoose.model("Order", orderSchema);
