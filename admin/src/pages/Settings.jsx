@@ -9,8 +9,6 @@ import { toast } from "react-toastify";
 export default function Settings() {
   const {companyData, getCompanyData} = useAdminContext();
 
-
-
   const [isLoading, setIsLoading] = useState(false);
 
   const [data, setData] = useState({
@@ -110,7 +108,7 @@ export default function Settings() {
             <div className="flex items-center justify-center gap-6 mt-10">
               <div className="flex flex-col items-center justify-center gap-1">
                 <div className="object-cover overflow-hidden border-2 rounded-full h-28 w-28 border-tremor-border">
-                  {companyData? (
+                  {companyData.length !== 0? (
                     <img
                       src={companyData[0].profileImg[0]}
                       className="w-full h-full"
@@ -126,7 +124,7 @@ export default function Settings() {
               </div>
               <div className="flex flex-col items-center justify-center gap-1">
                 <div className="object-cover overflow-hidden border-2 rounded-full h-28 w-28 border-tremor-border">
-                  {companyData? (
+                  {companyData.length !== 0? (
                     <img
                       src={companyData[0].companyLogo[0]}
                       className="w-full h-full"
@@ -150,11 +148,14 @@ export default function Settings() {
                 <Text className="w-64 text-lg font-normal">Company name</Text>
                 <TextInput
                   placeholder="Enter company name here"
-                  defaultValue={
+                  name="companyName"
+                  
+                  value={
                     companyData
                       ? companyData[0]?.companyName
-                      : data.AdminName
+                      : data.companyName
                   }
+                  
                   
                   onChange={(e) =>
                     setData((prev) => {
@@ -171,10 +172,16 @@ export default function Settings() {
                 <TextInput
                   placeholder="Enter your name"
                   defaultValue={
-                    companyData
+                    companyData.length !=0
                       ? companyData[0].AdminName
                       : data.AdminName
                   }
+                  value={
+                    companyData.length !=0
+                      ? companyData[0].AdminName
+                      : data.AdminName
+                  }
+
                   onChange={(e) =>
                     setData((prev) => {
                       return {
@@ -189,9 +196,12 @@ export default function Settings() {
                 <Text className="w-64 text-lg font-normal">GST Number</Text>
                 <TextInput
                   placeholder="Enter your GST number"
-                  type="Number"
+                  type="text"
                   defaultValue={
-                    companyData? companyData[0].GSTNo : data.GSTNo
+                    companyData.length !==0? companyData[0].GSTNo : data.GSTNo
+                  }
+                  value={
+                    companyData.length !==0? companyData[0].GSTNo : data.GSTNo
                   }
                   onChange={(e) =>
                     setData((prev) => {
@@ -210,7 +220,12 @@ export default function Settings() {
                 <TextInput
                   placeholder="Enter your business address"
                   defaultValue={
-                    companyData
+                    companyData.length !==0
+                      ? companyData[0].businessAddress
+                      : data.businessAddress
+                  }
+                  value={
+                    companyData.length !==0
                       ? companyData[0].businessAddress
                       : data.businessAddress
                   }
@@ -232,7 +247,12 @@ export default function Settings() {
                   placeholder="Enter your business phone number"
                   type="number"
                   defaultValue={
-                    companyData
+                    companyData.length !==0
+                      ? companyData[0].businessPhoneNumber
+                      : data.businessPhoneNumber
+                  }
+                  value={
+                    companyData.length !==0
                       ? companyData[0].businessPhoneNumber
                       : data.businessPhoneNumber
                   }
@@ -254,7 +274,12 @@ export default function Settings() {
                   placeholder="Enter your phone number"
                   type="number"
                   defaultValue={
-                    companyData
+                    companyData.length !==0
+                      ? companyData[0].adminPhoneNumber
+                      : data.adminPhoneNumber
+                  }
+                  value={
+                    companyData.length !==0
                       ? companyData[0].adminPhoneNumber
                       : data.adminPhoneNumber
                   }

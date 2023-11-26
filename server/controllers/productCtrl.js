@@ -9,9 +9,7 @@ import fs from "fs";
 const createProduct = asyncHandler(async (req, res) => {
   console.log(req.body);
   try {
-    const slug = slugify(req.body.title);
-   
-
+    
     const uploader = (path) => cloudinaryUploadImg(path, "images");
     const urls = [];
     const files = req.files;
@@ -39,7 +37,6 @@ const createProduct = asyncHandler(async (req, res) => {
     const disCouPri = JSON.parse(req.body.discountedPrice);
     const product = {
       title: req.body.title,
-      slug: slug,
       description: req.body.description,
       MRP: req.body.MRP,
       colorsAndImg: colorAndImg,
@@ -51,7 +48,26 @@ const createProduct = asyncHandler(async (req, res) => {
     const newProduct = await Product.create(product);
     res.json(newProduct);
   } catch (error) {
+    
     throw new Error(error);
+  }
+});
+
+const updateProductStock=asyncHandler(async (req, res) => {
+  const {id}=req.params
+ 
+  try {
+    const updateProduct = await Product.findByIdAndUpdate(id, {
+      $set: {
+        instock:req.body.instock
+      },
+    },
+    {new: true}
+    );
+    res.json(updateProduct)
+  } catch (error) {
+    throw new Error(error);
+    
   }
 });
 
@@ -59,10 +75,7 @@ const updateProduct = asyncHandler(async (req, res) => {
   const {id} = req.params;
   validateMongoDbId(id);
   try {
-   
-    const slug = slugify(req.body.title);
 
-    
     if (req.files) {
       const uploader = (path) => cloudinaryUploadImg(path, "images");
       const urls = [];
@@ -140,7 +153,6 @@ const updateProduct = asyncHandler(async (req, res) => {
     const updateProduct = await Product.findByIdAndUpdate(id, {
       $set: {
         title: req.body?.title,
-        slug: slug,
         description: req.body?.description,
         MRP: req.body?.MRP,
       },
@@ -322,4 +334,5 @@ export {
   getAllProduct,
   addToWishlist,
   rating,
+  updateProductStock
 };

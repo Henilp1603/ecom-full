@@ -44,6 +44,7 @@ var productSchema = new mongoose.Schema(
     totalQuantity:{
       type:Number
     },
+    instock:{type:Boolean,default:true},
     sold: {
       type: Number,
       default: 0,

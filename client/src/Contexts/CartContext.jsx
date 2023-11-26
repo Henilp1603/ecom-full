@@ -1,28 +1,40 @@
-import React, {createContext, useContext, useEffect, useReducer} from "react";
+import React, {createContext, useCallback, useContext, useEffect, useReducer} from "react";
 import axios from "axios";
 import cartReducer from "../Reducers/cartReducer";
 import {useProductContext} from "./ProductContext";
+import { useCookies } from "react-cookie";
 
 const CartContext = createContext();
 
-const getCartData = () => {
-  let newCart = JSON.parse(localStorage.getItem("_Cart"));
 
-  if (newCart == [] || newCart == null || newCart == undefined) {
-    return [];
-  } else {
-    return newCart;
-  }
-};
-
-const initialState = {
-  cart: getCartData(),
-  total_item: "",
-  total_price: "",
-};
 
 const CartProvider = ({children}) => {
+
+  const [cookie, setCookie] = useCookies(["cart"]);
+
+
+  const getCartData = useCallback(()=>{
+    let newCart=cookie.cart
+  
+    if (newCart == [] || newCart == null || newCart == undefined) {
+      return [];
+    } else {
+      return newCart;
+    }
+  },[])
+    // let newCart = JSON.parse(localStorage.getItem("_Cart"));
+  
+
+  
+  const initialState = {
+    cart: getCartData(),
+    total_item: "",
+    total_price: "",
+  };
   const [state, dispatch] = useReducer(cartReducer, initialState);
+
+
+
 
   const addToCart = (
     id,
@@ -45,6 +57,11 @@ const CartProvider = ({children}) => {
     });
   };
 
+  const addDBCartData=()=>{
+
+    dispatch({type:"ADD_DB_DATA",payload:getCartData()})
+  }
+
   const clearCart = () => {
     dispatch({type: "DELETE_CART"});
   };
@@ -63,12 +80,13 @@ const CartProvider = ({children}) => {
   }, [state.cart]);
 
   useEffect(() => {
-    localStorage.setItem("_Cart", JSON.stringify(state.cart));
-  });
+    // localStorage.setItem("_Cart", JSON.stringify(state.cart));
+    setCookie("cart",state.cart)
+  },[state.cart]);
 
   return (
     <CartContext.Provider
-      value={{...state, addToCart, removeItem, incrementItem, decrementItem,clearCart}}
+      value={{...state, addToCart, removeItem, incrementItem, decrementItem,clearCart,addDBCartData,getCartData}}
     >
       {children}
     </CartContext.Provider>

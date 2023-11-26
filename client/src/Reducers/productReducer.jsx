@@ -25,7 +25,8 @@ const productReducer = (state, action) => {
           allColors: singleProducts.colorsAndImg,
           selectedColor: {...singleProducts.colorsAndImg[0]},
           quantity: singleProducts.quantity,
-          ratings:singleProducts.ratings
+          ratings:singleProducts.ratings,
+          instock:singleProducts.instock
         },
       };
 

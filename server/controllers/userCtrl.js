@@ -12,8 +12,10 @@ import { log } from "console";
 
 const registerUser = asyncHandler(async (req, res) => {
   const email = req.body.email;
+  const {phoneNo} = req.body;
 
-  const findUser = await User.findOne({email});
+
+  const findUser = await User.findOne({phoneNo});
 
   if (!findUser) {
     const salt = await bcrypt.genSalt(12);
@@ -37,6 +39,7 @@ const registerUser = asyncHandler(async (req, res) => {
         name: savedUser?.name,
         email: savedUser?.email,
         phoneNo:savedUser?.phoneNo,
+        cartData:savedUser?.cartData,
         token: token
         }  
         
@@ -56,6 +59,9 @@ const registerUser = asyncHandler(async (req, res) => {
       res.status(500).json(error);
     }
   } else {
+    res.json({
+      error:"User Already Exists"
+    })
     throw new Error("User Already Exists");
   }
 });
@@ -64,8 +70,10 @@ const loginUser = asyncHandler(async (req, res) => {
   const {phoneNo, password} = req.body;
   // check if user exists or not
   const findUser = await User.findOne({phoneNo});
+  console.log(findUser);
   if (findUser) {
     const ismatch = await bcrypt.compare(password, findUser.password);
+    console.log(ismatch);
     if (ismatch) {
       const token = await generateToken(findUser?._id);
       const updateuser = await User.findByIdAndUpdate(
@@ -83,8 +91,15 @@ const loginUser = asyncHandler(async (req, res) => {
         _id: findUser?._id,
         name: findUser?.name,
         email: findUser?.email,
+        cartData:findUser?.cartData,
         token: token,
       });
+    }else{
+      res.json({
+        error:"Invalid Credentials"
+      })
+     throw new Error("Invalid Credentials");
+
     }
   } else {
     throw new Error("Invalid Credentials");
@@ -331,6 +346,33 @@ const saveAddress = asyncHandler(async (req, res, next) => {
   }
 });
 
+const updateCartData=asyncHandler(async (req, res, next) => {
+  const { _id } = req.user;
+  validateMongoDbId(_id);
+
+  
+
+  try {
+    const updatedCart = await User.findByIdAndUpdate(
+      _id,
+      {
+        cartData: [{
+          cart:req?.body?.cart,
+          total_Price:req?.body?.total_price
+        }
+        ],
+      },
+      {
+        new: true,
+      }
+    );
+    console.log(updatedCart);
+    res.json(updatedCart);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 export {
   registerUser,
   loginUser,
@@ -345,5 +387,6 @@ export {
   resetPassword,
   updatePassword,
   getWishlist,
-  saveAddress
+  saveAddress,
+  updateCartData
 };

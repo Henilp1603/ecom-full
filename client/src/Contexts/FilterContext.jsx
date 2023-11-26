@@ -12,6 +12,7 @@ const FilterProvider = ({children}) => {
     filter_products: [...products],
     filters: {
       category: "All",
+      text:""
     },
   };
 
@@ -43,6 +44,8 @@ const FilterProvider = ({children}) => {
     return dispatch({type: "UPDATE_FILTER_VALUE", payload: {name, value}});
 
   }
+
+  
 
   return (
     <FilterContext.Provider value={{...state, upadteFilterValue,hendleCtegory}}>

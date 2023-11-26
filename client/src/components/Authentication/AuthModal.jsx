@@ -5,13 +5,16 @@ import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {useRef} from "react";
 import {useCookies} from "react-cookie";
+import {useCartContext} from "../../Contexts/CartContext";
 
 export default function AuthModal({}) {
   const clickRef = useRef(null);
-  const [cookie, setCookie] = useCookies(["token"]);
+  const [cookie, setCookie] = useCookies(["token","cart"]);
 
-  const {name, email,phoneNo, password} = useAuthContext();
+  const {name, email, phoneNo, password} = useAuthContext();
   const navigate = useNavigate();
+
+  const {addDBCartData,getCartData} = useCartContext();
 
   const addData = async (e) => {
     e.preventDefault();
@@ -30,9 +33,12 @@ export default function AuthModal({}) {
 
       if (res && !res.err) {
         const token = res.token;
+        const cartData = res.cartData;
+        
         const date = new Date();
         date.setDate(date.getDate() + 30);
 
+        setCookie("cart", cartData[0].cart);
         setCookie("token", token, {path: "/", expires: date});
         navigate("/user-profile");
       }
@@ -41,8 +47,6 @@ export default function AuthModal({}) {
     }
   };
 
-
-
   const getData = async (e) => {
     e.preventDefault();
 
@@ -50,7 +54,7 @@ export default function AuthModal({}) {
 
     const data = {
       name,
-      email,
+      phoneNo,
       password,
     };
     try {
@@ -58,11 +62,15 @@ export default function AuthModal({}) {
 
       if (res && !res.err) {
         const token = res.token;
+        const cartData = res.cartData;
+        
 
         const date = new Date();
         date.setDate(date.getDate() + 30);
 
+        setCookie("cart",cartData[0].cart);
         setCookie("token", token, {path: "/", expires: date});
+        addDBCartData()
         navigate("/");
       }
     } catch (error) {
@@ -117,29 +125,29 @@ function AuthContent({action, onClick, login}) {
           <></>
         ) : (
           <>
-          <label>
-            <Text as="div" size="2" mb="1" weight="bold">
-              Name
-            </Text>
-            <TextField.Input
-              placeholder="Enter your name"
-              name="name"
-              onChange={changeData}
-            />
-          </label>
-          <label>
-          <Text as="div" size="2" mb="1" weight="bold">
-            Email
-          </Text>
-          <TextField.Input
-            placeholder="Enter your Email"
-            name="email"
-            onChange={changeData}
-          />
-        </label>
-        </>
+            <label>
+              <Text as="div" size="2" mb="1" weight="bold">
+                Name
+              </Text>
+              <TextField.Input
+                placeholder="Enter your name"
+                name="name"
+                onChange={changeData}
+              />
+            </label>
+            <label>
+              <Text as="div" size="2" mb="1" weight="bold">
+                Email
+              </Text>
+              <TextField.Input
+                placeholder="Enter your Email"
+                name="email"
+                onChange={changeData}
+              />
+            </label>
+          </>
         )}
-        
+
         <label>
           <Text as="div" size="2" mb="1" weight="bold">
             Phone No

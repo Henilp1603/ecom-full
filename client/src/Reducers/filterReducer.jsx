@@ -18,7 +18,7 @@ const filterReducer = (state, action) => {
 
     case "FILTER_PRODUCT":
       const products = action.payload;
-      const {category} = state.filters;
+      const {category,text} = state.filters;
 
       let tempProduct = [...products];
 
@@ -26,6 +26,12 @@ const filterReducer = (state, action) => {
         tempProduct = tempProduct.filter((item) => {
           return item.category.includes(category);
         });
+      }
+
+      if (text) {
+        tempProduct=tempProduct.filter((item)=>{
+          return item.title.toLowerCase().includes(text.toLowerCase())
+        })        
       }
 
       return {

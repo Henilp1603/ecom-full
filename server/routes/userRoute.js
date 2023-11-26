@@ -1,5 +1,5 @@
 import express from "express"
-import { deleteUser, forgotPasswordToken, getUser, getUserbyToken, getWishlist, getallUser, handleRefreshToken, loginUser, logout, registerUser, resetPassword, saveAddress, updatedUser } from "../controllers/userCtrl.js";
+import { deleteUser, forgotPasswordToken, getUser, getUserbyToken, getWishlist, getallUser, handleRefreshToken, loginUser, logout, registerUser, resetPassword, saveAddress, updateCartData, updatedUser } from "../controllers/userCtrl.js";
 import { authMiddleware, isAdmin } from "../middlewares/authMiddleware.js";
 
 
@@ -24,6 +24,7 @@ router.delete("/user-delete/:id",deleteUser)
 router.put("/edit-user",authMiddleware,updatedUser)
 router.get("/all-wishlist",getWishlist)
 router.put("/save-address",saveAddress)
+router.put("/save-cart",authMiddleware,updateCartData)
 
 
 

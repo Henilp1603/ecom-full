@@ -124,6 +124,16 @@
     margin-top: 7px;
     margin-bottom: 7px;
   }
+
+  .Inp_err_msg {
+    margin-left: 5px;
+    color: red;
+    display: none;
+  }
+  
+  .single_inp:invalid[focused="true"] ~ .Inp_err_msg {
+    display: block;
+  }
   
   @media(max-width: 450px){
     .receipt-actions-div{

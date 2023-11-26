@@ -15,6 +15,7 @@ import {PenIcon, WifiIcon, Trash} from "lucide-react";
 import {useProductContext} from "../Context/ProductContext";
 import {Link} from "react-router-dom";
 import {useFilterContext} from "../Context/FilterContext";
+import axios from "axios"
 
 function EditIcon() {
   return (
@@ -32,7 +33,7 @@ function DeleteIcon() {
   );
 }
 export default function Products() {
-  const {products, removeProduct} = useProductContext();
+  const {products, removeProduct,getProducts} = useProductContext();
   const {filter_products, upadteFilterValue, filters} = useFilterContext();
 
   const getUniqueData = (data, property) => {
@@ -48,6 +49,22 @@ export default function Products() {
   };
 
   const categoryData = getUniqueData(products, "category");
+
+  const changeStock= async(id,value)=>{
+    const url=`${import.meta.env.VITE_SERVER_API}/api/product/update-stock/${id}`
+    const newVal={instock:!value}
+    try {
+      const res=await axios.put(url,newVal)
+      if (res.data) {
+        getProducts(
+          `${import.meta.env.VITE_SERVER_API}/api/product/all-product`
+        );
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
 
   return (
     <div className="px-8 py-7 pl-72 w-[100vw] overflow-hidden">
@@ -134,6 +151,15 @@ export default function Products() {
                         {category}
                       </Badge>
                     ))}
+                  </TableCell>
+                  <TableCell>
+                    
+                      <Badge className="mx-1" color={item.instock?"blue":"red"} onClick={()=>changeStock(item._id,item.instock)}>
+                        {
+                          item.instock?"In stock":"Out of stock"
+                        }
+                      </Badge>
+                
                   </TableCell>
 
                   <TableCell>

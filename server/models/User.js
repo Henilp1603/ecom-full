@@ -12,7 +12,10 @@ const userSchema = new Schema(
     password: {type: String, required: true},
     role: {type: String, default: "customer"},
     address:{type:String},
-    cart: {type: Array, default: []},
+    cartData: [{
+      cart:{type:Array,default:[]},
+      total_Price:{type:Number}
+  }],
     wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
     refreshToken: {type: String},
     token:{type:String}

@@ -17,9 +17,13 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {useProductContext} from "../Context/ProductContext";
 import Loading from "../components/Loading";
 import {toast} from "react-toastify";
+import { useCategoryContext } from "../Context/CategoryContext";
 
 export default function UpdateProduct() {
   let {state} = useLocation();
+
+  const {category} = useCategoryContext();
+
 
   const [data, setData] = useState({
     title: state.title,
@@ -371,12 +375,12 @@ export default function UpdateProduct() {
                       value={curCategory}
                       onValueChange={(value) => setCurCategory(value)}
                     >
-                      <SearchSelectItem value="Resin">Resin</SearchSelectItem>
-                      <SearchSelectItem value="Art">Art</SearchSelectItem>
-                      <SearchSelectItem value="Epoxy">Epoxy</SearchSelectItem>
-                      <SearchSelectItem value="another">
-                        Another Category
-                      </SearchSelectItem>
+                     {
+                        category.length !== 0?(category.map((item)=>(
+                          <SearchSelectItem value={item.category}>{item.category}</SearchSelectItem>
+                          
+                          ))):<SearchSelectItem value="">No Category Available</SearchSelectItem>
+                      }
                     </SearchSelect>
                     <Button
                       className="flex-1"

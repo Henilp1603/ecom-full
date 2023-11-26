@@ -69,26 +69,29 @@ export default function ProductCard({item}) {
               ))}
             </div>
           </div>
-          <div className="flex items-center justify-start gap-2">
+          {
+            item.instock ?<div className="flex items-center justify-start gap-2">
             <span className="text-sm font-semibold line-through mrp">
               ₹{item.MRP}
             </span>
             <span className="text-3xl font-bold price">
               ₹{item.discountedPrice[0].price}
             </span>
-          </div>
+          </div>:<div><span className="text-red-600 font-medium">Out of Stock</span> </div>
+          }
+          
           <div className="flex items-center my-1 gap-x-2">
             <Button
               className=""
               onClick={() =>
 
-                cookie.token && handleBuyNow(
+                cookie.token ? handleBuyNow(
                   item,
                   item.colorsAndImg[0].color,
                   item.colorsAndImg[0].image,
                   item.discountedPrice[0].price,
                   item.discountedPrice[0].size
-                )
+                ):navigate("/login")
               }
             >
               Buy Now
@@ -97,14 +100,14 @@ export default function ProductCard({item}) {
             <Button
               variant="outline"
               onClick={() =>
-                cookie.token && addToCart(
+                cookie.token ? addToCart(
                   item._id,
                   item,
                   item.colorsAndImg[0].color,
                   item.colorsAndImg[0].image,
                   item.discountedPrice[0].price,
                   item.discountedPrice[0].size
-                )
+                ):navigate("/login")
               }
             >
               Add to cart

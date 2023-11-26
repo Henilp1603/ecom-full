@@ -111,7 +111,15 @@ const cartReducer = (state, action) => {
         cart:[],
         total_item:"",
         total_price:""
-      }  
+      } 
+      
+    case "ADD_DB_DATA":
+    
+       return {
+        ...state,
+        cart:action.payload,
+       }
+
 
     default:
       return state;

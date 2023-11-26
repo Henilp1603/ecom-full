@@ -1,5 +1,5 @@
 import express from "express"
-import { addToWishlist, createProduct, deleteProduct, getAllProduct, getaProduct, rating, updateProduct } from "../controllers/productCtrl.js";
+import { addToWishlist, createProduct, deleteProduct, getAllProduct, getaProduct, rating, updateProduct, updateProductStock } from "../controllers/productCtrl.js";
 import { authMiddleware, isAdmin } from "../middlewares/authMiddleware.js";
 import { productImgResize, uploadPhoto } from "../middlewares/uploadImgaes.js";
 import { uploadImages } from "../controllers/uploadImgCtrl.js";
@@ -17,6 +17,7 @@ router.delete("/delete-product/:id",deleteProduct)
 
 router.put("/wishlist",authMiddleware,addToWishlist)
 router.put("/ratings",authMiddleware,rating)
+router.put("/update-stock/:id",updateProductStock)
 
 
 export default router

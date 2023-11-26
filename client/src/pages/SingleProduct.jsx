@@ -9,10 +9,13 @@ import {Rating} from "@mui/material";
 import {useCartContext} from "../Contexts/CartContext";
 import moment from "moment";
 import AddReview from "../components/AddReview/AddReview";
+import { useCookies } from "react-cookie";
 
 export default function SingleProduct() {
   const {id} = useParams();
   const navigate = useNavigate();
+  const [cookie, setCookie] = useCookies(["token"]);
+
 
   const {
     getSingleProduct,
@@ -60,7 +63,7 @@ export default function SingleProduct() {
           <div className="flex items-start justify-center p-10 max-lg:flex-col max-lg:items-center">
             <div className="w-[30%] overflow-hidden h-1/2 aspect-auto rounded-2xl max-lg:w-1/2">
               <img
-                src={singleProducts.selectedColor.image[0]}
+                src={singleProducts?.selectedColor?.image[0]}
                 alt="Product Photo"
                 style={{
                   display: "block",
@@ -74,30 +77,33 @@ export default function SingleProduct() {
               <div className="flex flex-col items-start justify-start w-full h-full gap-3">
                 <h1 className="text-3xl font-bold">{singleProducts.title}</h1>
                 <div className="flex gap-2">
-                  {singleProducts.category.map((p) => (
+                  {singleProducts?.category?.map((p) => (
                     <Badge variant="soft">{p}</Badge>
                   ))}
                 </div>
                 <div className="flex items-center gap-2">
                   <div>
                     <p className="font-semibold">
-                      {singleProducts.totalRating}
+                      {singleProducts?.totalRating}
                     </p>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Rating value={singleProducts.totalRating} readOnly />
+                    <Rating value={singleProducts?.totalRating} readOnly />
                   </div>
                 </div>
-                <div className="flex flex-row-reverse items-center gap-3">
+                {
+                  singleProducts.instock ?<div className="flex flex-row-reverse items-center gap-3">
                   <p className="text-lg font-semibold text-gray-500 line-through">
                     ₹{singleProducts.MRP}
                   </p>
                   <p className="text-5xl font-bold">
-                    ₹{singleProducts.selectedPrice.price}
+                    ₹{singleProducts?.selectedPrice.price}
                   </p>
-                </div>
+                </div>: <div> <span className="text-red-600 font-semibold">Out Of Stock</span> </div>
+                }
+                
                 <div>
-                  <p>{singleProducts.description}</p>
+                  <p>{singleProducts?.description}</p>
                 </div>
                 <div className="flex flex-col gap-1 mt-8">
                   <label>
@@ -106,10 +112,10 @@ export default function SingleProduct() {
                     </Text>
                   </label>
                   <div className="flex gap-2 mt-2">
-                    {singleProducts.allPrice.map((i) => (
+                    {singleProducts?.allPrice?.map((i) => (
                       <Badge
                         variant={
-                          i.size == singleProducts.selectedPrice.size
+                          i.size == singleProducts?.selectedPrice?.size
                             ? "solid"
                             : "outline"
                         }
@@ -129,16 +135,16 @@ export default function SingleProduct() {
                     </Text>
                   </label>
                   <div className="flex gap-2 mt-2">
-                    {singleProducts.allColors.map((i) => (
+                    {singleProducts?.allColors?.map((i) => (
                       <Badge
                         variant={
-                          i.color == singleProducts.selectedColor.color
+                          i.color == singleProducts?.selectedColor?.color
                             ? "solid"
                             : "outline"
                         }
                         size="2"
                         role="button"
-                        color={i.color.toLowerCase()}
+                        color={i?.color?.toLowerCase()}
                         onClick={() => handelColorSelect(i)}
                       >
                         {i.color}
@@ -152,14 +158,14 @@ export default function SingleProduct() {
                     size="4"
                     className="max-lg:w-full"
                     onClick={() =>
-                      addToCart(
+                      cookie.token ? addToCart(
                         singleProducts.id,
                         singleProducts,
                         singleProducts.selectedColor.color,
                         singleProducts.selectedColor.image,
                         singleProducts.selectedPrice.price,
                         singleProducts.selectedPrice.size
-                      )
+                      ):navigate("/login")
                     }
                   >
                     Add to cart
@@ -168,13 +174,13 @@ export default function SingleProduct() {
                     size="4"
                     className="w-64 max-lg:w-full"
                     onClick={() =>
-                      handleBuyNow(
+                      cookie.token ? handleBuyNow(
                         singleProducts,
                         singleProducts.selectedColor.color,
                         singleProducts.selectedColor.image,
                         singleProducts.selectedPrice.price,
                         singleProducts.selectedPrice.size
-                      )
+                      ):navigate("/login")
                     }
                   >
                     Buy Now
@@ -201,7 +207,7 @@ export default function SingleProduct() {
                         <div className="flex gap-2 items-center">
                           <div>Avatar</div>
                           <div className="font-semibold">
-                            {item?.postedby.name}
+                            {item?.postedby?.name}
                           </div>
                           <div className="font-light">
                             {moment(item?.createdDate).fromNow()}

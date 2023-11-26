@@ -2,18 +2,40 @@ import React from "react";
 import NavDropDown from "./NavDropDown";
 import SearchBar from "./SearchBar";
 import AuthModal from "../Authentication/AuthModal";
-import {Link} from "react-router-dom";
+import {Link, NavLink} from "react-router-dom";
 import Cartbtn from "./Cartbtn";
 import {useCookies} from "react-cookie";
-import {Avatar, DropdownMenu, IconButton} from "@radix-ui/themes";
+import {Avatar, Button, DropdownMenu, IconButton} from "@radix-ui/themes";
 import {LogOut, User} from "lucide-react";
 import {useNavigate} from "react-router-dom";
+import axios from "axios";
+import {useCartContext} from "../../Contexts/CartContext";
+import {LogIn} from "lucide-react";
+
 
 export default function Navbar() {
-  const [cookie, setCookie, removeCookie] = useCookies(["token"]);
-  const navigate = useNavigate();
+  const [cookie, setCookie, removeCookie] = useCookies(["token", "cart"]);
 
-  const logout = () => {
+  const navigate = useNavigate();
+  const {cart, total_price, clearCart} = useCartContext();
+
+  const logout = async () => {
+    const url = "http://localhost:8080/api/user/save-cart";
+    const data = {
+      cart,
+      total_price,
+    };
+    try {
+      const res = await axios.put(url, data, {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      });
+      console.log(res);
+    } catch (error) {}
+    // localStorage.removeItem("_Cart")
+    removeCookie("cart");
+    clearCart();
     removeCookie("token");
     navigate("/");
   };
@@ -45,7 +67,14 @@ export default function Navbar() {
             <SearchBar />
           </div>
           <div className="flex items-center justify-center gap-3 cta">
-            {cookie.token ? <Cartbtn /> : <AuthModal />}
+            {cookie.token ? (
+              <Cartbtn />
+            ) : (
+              <NavLink to="/login"><Button size="2">
+                <LogIn width={16} height={16} />
+                Login
+              </Button></NavLink>
+            )}
           </div>
 
           {cookie.token && (

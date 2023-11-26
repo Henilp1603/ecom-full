@@ -28,6 +28,10 @@ const AddCategory = () => {
   });
 
   const handelAddCategory = async () => {
+    if (data.category === "") {
+      toast.error("category is required.")
+      return;
+    }
     setIsLoading(true);
     const API = `${import.meta.env.VITE_SERVER_API}/api/category/add-category`;
 
@@ -95,6 +99,7 @@ const AddCategory = () => {
                     required
                     name="category"
                     onChange={(e) => {
+
                       setData((prev) => {
                         return {
                           ...prev,

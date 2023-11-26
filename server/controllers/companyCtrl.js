@@ -106,6 +106,40 @@ const updateCompanyDetail = asyncHandler(async (req, res) => {
      
     }
 
+    const savedCompanyData=await Company.findById(id)
+
+    console.log(savedCompanyData);
+
+    if (req.body.companyName === "") {
+      req.body.companyName = savedCompanyData.companyName
+    }
+
+    if (req.body.AdminName === "") {
+      req.body.AdminName = savedCompanyData.AdminName
+    }
+
+    if (req.body.GSTNo === "") {
+      req.body.GSTNo = savedCompanyData.GSTNo
+      
+    }
+
+    if (req.body.businessAddress === "") {
+      req.body.businessAddress = savedCompanyData.businessAddress
+      
+    }
+
+    if (req.body.businessPhoneNumber === "") {
+      req.body.businessPhoneNumber = savedCompanyData.businessPhoneNumber
+      
+    }
+
+    if (req.body.adminPhoneNumber === "") {
+      req.body.adminPhoneNumber = savedCompanyData.adminPhoneNumber
+      
+    }
+
+    
+
     const updateCompanyData = await Company.findByIdAndUpdate(id, {
       $set: {
         companyName: req.body?.companyName,

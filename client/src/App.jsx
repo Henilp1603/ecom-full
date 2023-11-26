@@ -16,6 +16,8 @@ import SingleProduct from "./pages/SingleProduct";
 import UserProfile from "./pages/UserProfile";
 import {BrowserRouter as Router, Route, Routes, Outlet, Navigate} from "react-router-dom";
 import AuthModal from "./components/Authentication/AuthModal";
+import Login from "./components/Authentication/Login";
+import SignUp from "./components/Authentication/SignUp";
 
 function App() {
   const [cookie, setCookie] = useCookies(["token"]);
@@ -54,6 +56,8 @@ function App() {
             <Route path="/terms/refund" element={<Refund />} />
             <Route path="/terms/shipping" element={<Shipping />} />
             <Route path="/terms/terms" element={<Terms />} />
+            <Route path="/login" element={<Login/>}/>
+            <Route path="/signup" element={<SignUp/>}/>
             <Route path="*" element={<Navigate to="/"/>}/>
           </Routes>
         )}

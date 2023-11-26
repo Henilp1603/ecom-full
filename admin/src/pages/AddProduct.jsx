@@ -17,12 +17,11 @@ import {Link, useNavigate} from "react-router-dom";
 import {useProductContext} from "../Context/ProductContext";
 import Loading from "../components/Loading";
 import {toast} from "react-toastify";
-import { useCategoryContext } from "../Context/CategoryContext";
-import { useFilterContext } from "../Context/FilterContext";
+import {useCategoryContext} from "../Context/CategoryContext";
+import {useFilterContext} from "../Context/FilterContext";
 
 export default function AddProduct() {
   const {category} = useCategoryContext();
-  
 
   const [data, setData] = useState({
     title: "",
@@ -43,8 +42,6 @@ export default function AddProduct() {
   const [size, setSize] = useState("");
   const [price, setPrice] = useState("");
 
-  const [uploadedImg, setUploadedImg] = useState(null);
-
   const {getProducts} = useProductContext();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -56,27 +53,76 @@ export default function AddProduct() {
     const API = `${import.meta.env.VITE_SERVER_API}/api/product/create-product`;
 
     try {
-      const formData = new FormData();
-      formData.append("title", data.title);
-      formData.append("description", data.description);
-      formData.append("MRP", data.MRP);
+      if (
+        data.title === "" ||
+        data.description === "" ||
+        data.MRP === "" ||
+        data.category.length ==0 ||
+        data.discountedPrice.length == 0 ||
+        data.images.length == 0 ||
+        data.colors.length == 0 ||
+        image === "" ||
+        size ===""||
+        price ===""
+      ) {
+        alert("All Fields Are Mandatory")
+        if (data.title === "") {
+          toast.error("Product Name is required.")
+        }
 
-      formData.append("colors", JSON.stringify(data.colors));
-      formData.append("discountedPrice", JSON.stringify(data.discountedPrice));
+        if (data.description === "") {
+          toast.error("Product Description is required.")
+        }
 
-      data.images.map((f) => formData.append("images", f));
+        if (data.MRP === "") {
+          toast.error("MRP is required.")
+        }
 
-      data.category.map((c) => formData.append("category", c));
+        if (data.category.length ==0) {
+          toast.error("Product category must be selected.")
+        }
 
-      const res = await axios.post(API, formData);
-      if (res.data) {
-        setIsLoading(false);
-        toast.success("Product Created.");
-        navigate("/products");
-        getProducts(
-          `${import.meta.env.VITE_SERVER_API}/api/product/all-product`
+        if (data.colors.length == 0 || data.images.length == 0  ) {
+          toast.error("Product color and image must be added.")
+        }
+
+        if (image === ""  ) {
+          toast.error("Product image Can not be null .")
+        }
+
+        if (data.discountedPrice.length == 0) {
+          toast.error("Product size and price must be added.")
+        }
+
+        
+
+
+        setIsLoading(false)
+      } else {
+        const formData = new FormData();
+        formData.append("title", data.title);
+        formData.append("description", data.description);
+        formData.append("MRP", data.MRP);
+
+        formData.append("colors", JSON.stringify(data.colors));
+        formData.append(
+          "discountedPrice",
+          JSON.stringify(data.discountedPrice)
         );
 
+        data.images.map((f) => formData.append("images", f));
+
+        data.category.map((c) => formData.append("category", c));
+
+        const res = await axios.post(API, formData);
+        if (res.data && !res.error) {
+          setIsLoading(false);
+          toast.success("Product Created.");
+          navigate("/products");
+          getProducts(
+            `${import.meta.env.VITE_SERVER_API}/api/product/all-product`
+          );
+        }
       }
     } catch (error) {
       setIsLoading(false);
@@ -84,7 +130,19 @@ export default function AddProduct() {
     }
   };
 
-  const addColorAndImg=()=>{
+  const addColorAndImg = () => {
+    if (curColor == "" || image =="") {
+      if (curColor =="") {
+        toast.error("color is required.")
+      }
+
+      if (image =="") {
+        toast.error("image is required.")
+      }
+
+      return;
+
+    }
     setData((prev) => {
       return {
         ...prev,
@@ -102,9 +160,19 @@ export default function AddProduct() {
     toast.success("Color and Image Added.");
     setcurColor("");
     setImage("");
-  }
+  };
 
-  const addSizeAndPrice=()=>{
+  const addSizeAndPrice = () => {
+
+    if (size === "" || price === "") {
+      if (size =="") {
+        toast.error("size is required.")
+      }
+      if (price === "") {
+        toast.error("price is required.")
+      }
+      return;
+    }
     setData((prev) => {
       return {
         ...prev,
@@ -120,9 +188,13 @@ export default function AddProduct() {
     setPrice("");
     setSize("");
     toast.success("Size and Price Added.");
-  }
+  };
 
-  const addCategory=()=>{
+  const addCategory = () => {
+    if (curCategory === "") {
+      toast.error("category is required.")
+      return;
+    }
     setData((prev) => {
       return {
         ...prev,
@@ -131,7 +203,7 @@ export default function AddProduct() {
     });
     toast.success("Category Added.");
     setCurCategory("");
-  }
+  };
 
   const removeColorAndImg = (item) => {
     let newColorandImg = data.colorAndImg.filter((i) => i.color != item.color);
@@ -177,8 +249,6 @@ export default function AddProduct() {
     toast.success("Category Remove.");
   };
 
-  console.log(data);
-
   return (
     <>
       {isLoading ? (
@@ -198,22 +268,22 @@ export default function AddProduct() {
                 <Table>
                   <TableRow>
                     <TableHeaderCell>Product Name</TableHeaderCell>
-                    <TableCell>{data.title}</TableCell>
+                    <TableCell>{data?.title}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableHeaderCell>Description</TableHeaderCell>
-                    <TableCell>{data.description}</TableCell>
+                    <TableCell>{data?.description}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableHeaderCell>MRP</TableHeaderCell>
-                    <TableCell>{data.MRP}</TableCell>
+                    <TableCell>{data?.MRP}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableHeaderCell>Color & Image</TableHeaderCell>
                     <TableCell>
-                      {data.colorAndImg.map((item) => (
+                      {data?.colorAndImg?.map((item) => (
                         <div className="flex gap-2 items-center py-1">
-                          <Text>{item.color}</Text>
+                          <Text>{item?.color}</Text>
                           <Text>image</Text>
                           <Button
                             size="sm"
@@ -231,7 +301,7 @@ export default function AddProduct() {
                   <TableRow>
                     <TableHeaderCell>Category</TableHeaderCell>
                     <TableCell>
-                      {data.category.map((item) => (
+                      {data?.category?.map((item) => (
                         <div className="flex gap-2 items-center py-1">
                           <Text>{item}</Text>
 
@@ -251,10 +321,10 @@ export default function AddProduct() {
                   <TableRow>
                     <TableHeaderCell>Size & Price</TableHeaderCell>
                     <TableCell>
-                      {data.discountedPrice.map((item) => (
+                      {data?.discountedPrice?.map((item) => (
                         <div className="flex gap-2 items-center py-1">
-                          <Text>{item.size}</Text>
-                          <Text>{item.price}</Text>
+                          <Text>{item?.size}</Text>
+                          <Text>{item?.price}</Text>
                           <Button
                             size="sm"
                             color="red"
@@ -269,7 +339,6 @@ export default function AddProduct() {
                     </TableCell>
                   </TableRow>
                 </Table>
-                
               </div>
               <div className="w-full mt-4">
                 <Text className="text-xl font-semibold">
@@ -332,7 +401,7 @@ export default function AddProduct() {
 
                 <div className="flex items-center justify-center gap-2">
                   <Text className="w-64 text-lg font-normal">
-                    Colors available 
+                    Colors available
                   </Text>
                   <TextInput
                     placeholder="Enter Colors"
@@ -342,6 +411,7 @@ export default function AddProduct() {
                     value={curColor}
                     onChange={(e) => setcurColor(e.target.value)}
                   ></TextInput>
+
                   <TextInput
                     placeholder="Enter Price"
                     autoComplete="off"
@@ -351,10 +421,8 @@ export default function AddProduct() {
                     defaultValue={image}
                     onChange={(e) => setImage(e.target.files[0])}
                   ></TextInput>
-                  <Button
-                    className="flex-1"
-                    onClick={() =>addColorAndImg()}
-                  >
+
+                  <Button className="flex-1" onClick={() => addColorAndImg()}>
                     Add
                   </Button>
                 </div>
@@ -367,21 +435,21 @@ export default function AddProduct() {
                     <SearchSelect
                       value={curCategory}
                       required
-                  
                       onValueChange={(value) => setCurCategory(value)}
                     >
-                      {
-                        category.length !== 0?(category.map((item)=>(
-                          <SearchSelectItem value={item.category}>{item.category}</SearchSelectItem>
-                          
-                          ))):<SearchSelectItem value="">No Category Available</SearchSelectItem>
-                      }
-                      
+                      {category.length !== 0 ? (
+                        category.map((item) => (
+                          <SearchSelectItem value={item.category}>
+                            {item.category}
+                          </SearchSelectItem>
+                        ))
+                      ) : (
+                        <SearchSelectItem value="">
+                          No Category Available
+                        </SearchSelectItem>
+                      )}
                     </SearchSelect>
-                    <Button
-                      className="flex-1"
-                      onClick={() =>addCategory()}
-                    >
+                    <Button className="flex-1" onClick={() => addCategory()}>
                       Add
                     </Button>
                   </div>
@@ -399,6 +467,7 @@ export default function AddProduct() {
                     autoComplete="off"
                     value={size}
                   ></TextInput>
+
                   <TextInput
                     placeholder="Enter Price"
                     className="flex-1"
@@ -409,10 +478,7 @@ export default function AddProduct() {
                     onChange={(e) => setPrice(e.target.value)}
                   ></TextInput>
 
-                  <Button
-                    className="flex-1"
-                    onClick={() =>addSizeAndPrice()}
-                  >
+                  <Button className="flex-1" onClick={() => addSizeAndPrice()}>
                     Add
                   </Button>
                 </div>
