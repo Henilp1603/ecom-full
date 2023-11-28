@@ -15,20 +15,36 @@ export default function Cart() {
   const handelCheckout = async () => {
     const url2 = `${import.meta.env.VITE_SERVER_API}/api/order/create-order`;
 
-    const data = {
-      cart,
-      total_price,
-    };
+    const url=`${import.meta.env.VITE_SERVER_API}/api/phonepe/payment`
+
+    // const cartdata = {
+    //   cart,
+    //   total_price,
+    // };
+
+    // const {data: res} = await axios.post(url2, cartdata,{
+    //   headers: {
+    //     Authorization: `Bearer ${cookie.token}`
+    //   }
+    //   });
+
+    const data ={
+      name: 'Henil',
+      amount: 10,
+      number: '7572994297',
+      MUID: "MUID" + Date.now(),
+      transactionId: 'T' + Date.now(),
+  }
 
     try {
-      const {data: res} = await axios.post(url2, data, {
-        headers: {
-          Authorization: `Bearer ${cookie.token}`,
-        },
-      });
+      const {data: res} = await axios.post(url, data);
+
+      window.location.href=res
 
       if (res && !res.err) {
-        navigate("/checkout")
+       
+
+        
       }
     } catch (error) {
       console.log(error);
@@ -76,7 +92,7 @@ export default function Cart() {
                         Red Glitter Epoxy Resin
                       </Table.RowHeaderCell>
                       <Table.Cell>₹500</Table.Cell>
-                      <Table.Cell>₹{item.selectedPrice}</Table.Cell>
+                      <Table.Cell>₹{item.price}</Table.Cell>
                     </Table.Row>
                   ))}
                 </Table.Body>
