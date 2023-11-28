@@ -34,7 +34,7 @@ export default function UserProfile() {
     }
 
     const setData=async()=>{
-        const url=`http://localhost:8080/api/user/edit-user`
+        const url=`${import.meta.env.VITE_SERVER_API}/api/user/edit-user`
         try {
             const res=await axios.put(url,data,{
                 headers:{

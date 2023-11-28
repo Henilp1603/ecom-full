@@ -20,7 +20,7 @@ export default function Navbar() {
   const {cart, total_price, clearCart} = useCartContext();
 
   const logout = async () => {
-    const url = "http://localhost:8080/api/user/save-cart";
+    const url = `${import.meta.env.VITE_SERVER_API}/api/user/save-cart`;
     const data = {
       cart,
       total_price,
