@@ -7,7 +7,7 @@ import {cloudinaryUploadImg} from "../utils/Cloudinary.js";
 import fs from "fs";
 
 const createProduct = asyncHandler(async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   try {
     
     const uploader = (path) => cloudinaryUploadImg(path, "images");
@@ -43,12 +43,12 @@ const createProduct = asyncHandler(async (req, res) => {
       discountedPrice: disCouPri,
       category: req.body.category,
     };
-
-   
+    console.log(product);
     const newProduct = await Product.create(product);
+    console.log(newProduct);
     res.json(newProduct);
   } catch (error) {
-    
+    console.log(error);
     throw new Error(error);
   }
 });
@@ -108,7 +108,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     
      Newimages.map((img)=>immg.push(img))
      
-     console.log(immg)
+     
 
      const colorAndImg = immg.map((i, index) => {
       return {color:c[index], image: i};
@@ -141,7 +141,7 @@ const updateProduct = asyncHandler(async (req, res) => {
       {new:true})
     }
     
-    if (req.body.category) {
+    if (req?.body?.category) {
       const updateProduct=await Product.findByIdAndUpdate(id,{
         $set:{
           category: req.body?.category,
@@ -152,9 +152,9 @@ const updateProduct = asyncHandler(async (req, res) => {
 
     const updateProduct = await Product.findByIdAndUpdate(id, {
       $set: {
-        title: req.body?.title,
-        description: req.body?.description,
-        MRP: req.body?.MRP,
+        title: req?.body?.title,
+        description: req?.body?.description,
+        MRP: req?.body?.MRP,
       },
     },
     {new: true}

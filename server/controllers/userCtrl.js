@@ -73,27 +73,39 @@ const loginUser = asyncHandler(async (req, res) => {
   console.log(findUser);
   if (findUser) {
     const ismatch = await bcrypt.compare(password, findUser.password);
-    console.log(ismatch);
     if (ismatch) {
+
       const token = await generateToken(findUser?._id);
-      const updateuser = await User.findByIdAndUpdate(
-        findUser.id,
-        {
-          token: token,
-        },
-        {new: true}
-      );
-      res.cookie("token", token, {
-        httpOnly: true,
-        maxAge: 72 * 60 * 60 * 1000,
-      });
-      res.json({
-        _id: findUser?._id,
-        name: findUser?.name,
-        email: findUser?.email,
-        cartData:findUser?.cartData,
-        token: token,
-      });
+      const isAdmin= findUser.role === "admin"
+      if (isAdmin) {
+        res.json({
+          admin:true,
+          url:"http://localhost:5173",
+          token:token
+        })
+      
+      }else{
+
+        const updateuser = await User.findByIdAndUpdate(
+          findUser.id,
+          {
+            token: token,
+          },
+          {new: true}
+          );
+          res.cookie("token", token, {
+            httpOnly: true,
+            maxAge: 72 * 60 * 60 * 1000,
+          });
+          res.json({
+            _id: findUser?._id,
+            admin:false,
+            name: findUser?.name,
+            email: findUser?.email,
+            cartData:findUser?.cartData,
+            token: token,
+          });
+        }
     }else{
       res.json({
         error:"Invalid Credentials"

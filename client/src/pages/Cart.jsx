@@ -28,16 +28,20 @@ export default function Cart() {
     //   }
     //   });
 
+  
+
     const data ={
-      name: 'Henil',
-      amount: 10,
-      number: '7572994297',
+      amount: total_price,
       MUID: "MUID" + Date.now(),
       transactionId: 'T' + Date.now(),
   }
 
     try {
-      const {data: res} = await axios.post(url, data);
+      const {data: res} = await axios.post(url, data,{
+        headers: {
+              Authorization: `Bearer ${cookie.token}`
+            }
+      });
 
       window.location.href=res
 

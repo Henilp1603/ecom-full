@@ -4,8 +4,15 @@ import HomeIcon from "../icons/HomeIcon";
 import ProductsIcon from "../icons/ProductsIcon";
 import UsersIcon from "../icons/UsersIcon";
 import {Link, NavLink} from "react-router-dom";
+import {useCookies} from "react-cookie";
+
 
 export function Sidebar({}) {
+  const [cookie, setCookie, removeCookie] = useCookies(["token", "cart"]);
+  const logout=()=>{
+    removeCookie("token")
+    window.location.href="http://localhost:5174"
+  }
   return (
     <div
       id="docs-sidebar"
@@ -79,6 +86,16 @@ export function Sidebar({}) {
               </button>
             </li>
           </NavLink>
+          <li>
+              <button
+                type="button"
+                className="w-full text-start flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-red-500 rounded-lg hover:bg-gray-100 "
+                onClick={()=>logout()}
+              >
+                <AccountSettingsIcon />
+                Logout
+              </button>
+            </li>
         </ul>
 
         <NavLink to="/add-product">

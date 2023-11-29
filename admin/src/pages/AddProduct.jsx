@@ -53,76 +53,76 @@ export default function AddProduct() {
     const API = `${import.meta.env.VITE_SERVER_API}/api/product/create-product`;
 
     try {
-      if (
-        data.title === "" ||
-        data.description === "" ||
-        data.MRP === "" ||
-        data.category.length ==0 ||
-        data.discountedPrice.length == 0 ||
-        data.images.length == 0 ||
-        data.colors.length == 0 ||
-        image === "" ||
-        size ===""||
-        price ===""
-      ) {
-        alert("All Fields Are Mandatory")
-        if (data.title === "") {
-          toast.error("Product Name is required.")
-        }
+      // if (
+      //   data.title === "" ||
+      //   data.description === "" ||
+      //   data.MRP === "" ||
+      //   data.category.length ==0 ||
+      //   data.discountedPrice.length == 0 ||
+      //   data.images.length == 0 ||
+      //   data.colors.length == 0
 
-        if (data.description === "") {
-          toast.error("Product Description is required.")
-        }
+      // ) {
+      //   alert("All Fields Are Mandatory")
+      if (data.title === "") {
+        toast.error("Product Name is required.");
+        setIsLoading(false);
 
-        if (data.MRP === "") {
-          toast.error("MRP is required.")
-        }
+        return;
+      }
 
-        if (data.category.length ==0) {
-          toast.error("Product category must be selected.")
-        }
+      if (data.description === "") {
+        toast.error("Product Description is required.");
+        setIsLoading(false);
 
-        if (data.colors.length == 0 || data.images.length == 0  ) {
-          toast.error("Product color and image must be added.")
-        }
+        return;
+      }
 
-        if (image === ""  ) {
-          toast.error("Product image Can not be null .")
-        }
+      if (data.MRP === "") {
+        toast.error("MRP is required.");
+        setIsLoading(false);
 
-        if (data.discountedPrice.length == 0) {
-          toast.error("Product size and price must be added.")
-        }
+        return;
+      }
 
-        
+      //   if (data.category.length ==0) {
+      //     toast.error("Product category must be selected.")
+      //   }
 
+      //   if (data.colors.length == 0  ) {
+      //     toast.error("Product color and image must be added.")
+      //   }
 
-        setIsLoading(false)
-      } else {
-        const formData = new FormData();
-        formData.append("title", data.title);
-        formData.append("description", data.description);
-        formData.append("MRP", data.MRP);
+      //   if (data.discountedPrice.length == 0) {
+      //     toast.error("Product size and price must be added.")
+      //   }
 
-        formData.append("colors", JSON.stringify(data.colors));
-        formData.append(
-          "discountedPrice",
-          JSON.stringify(data.discountedPrice)
+      if (data.colors == "" || data.images == "" || data.colorAndImg == "") {
+        toast.error("Product color and image can't be Null.");
+        setIsLoading(false);
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("description", data.description);
+      formData.append("MRP", data.MRP);
+
+      formData.append("colors", JSON.stringify(data.colors));
+      formData.append("discountedPrice", JSON.stringify(data.discountedPrice));
+
+      data.images.map((f) => formData.append("images", f));
+
+      data.category.map((c) => formData.append("category", c));
+
+      const res = await axios.post(API, formData);
+      if (res.data && !res.error) {
+        setIsLoading(false);
+        toast.success("Product Created.");
+        navigate("/products");
+        getProducts(
+          `${import.meta.env.VITE_SERVER_API}/api/product/all-product`
         );
-
-        data.images.map((f) => formData.append("images", f));
-
-        data.category.map((c) => formData.append("category", c));
-
-        const res = await axios.post(API, formData);
-        if (res.data && !res.error) {
-          setIsLoading(false);
-          toast.success("Product Created.");
-          navigate("/products");
-          getProducts(
-            `${import.meta.env.VITE_SERVER_API}/api/product/all-product`
-          );
-        }
       }
     } catch (error) {
       setIsLoading(false);
@@ -131,17 +131,16 @@ export default function AddProduct() {
   };
 
   const addColorAndImg = () => {
-    if (curColor == "" || image =="") {
-      if (curColor =="") {
-        toast.error("color is required.")
+    if (curColor == "" || image == "") {
+      if (curColor == "") {
+        toast.error("color is required.");
       }
 
-      if (image =="") {
-        toast.error("image is required.")
+      if (image == "") {
+        toast.error("image is required.");
       }
 
       return;
-
     }
     setData((prev) => {
       return {
@@ -163,13 +162,12 @@ export default function AddProduct() {
   };
 
   const addSizeAndPrice = () => {
-
     if (size === "" || price === "") {
-      if (size =="") {
-        toast.error("size is required.")
+      if (size == "") {
+        toast.error("size is required.");
       }
       if (price === "") {
-        toast.error("price is required.")
+        toast.error("price is required.");
       }
       return;
     }
@@ -192,7 +190,7 @@ export default function AddProduct() {
 
   const addCategory = () => {
     if (curCategory === "") {
-      toast.error("category is required.")
+      toast.error("category is required.");
       return;
     }
     setData((prev) => {

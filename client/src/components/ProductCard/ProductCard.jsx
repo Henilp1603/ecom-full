@@ -39,8 +39,8 @@ export default function ProductCard({item}) {
         <Link to={`/single-product/${item._id}`}>
           <div className="w-56 h-56 overflow-hidden rounded-2xl">
             <img
-              src={item.colorsAndImg[0].image[0]}
-              alt={item.title}
+              src={item?.colorsAndImg[0]?.image[0]}
+              alt={item?.title}
               style={{
                 display: "block",
                 objectFit: "cover",
@@ -53,10 +53,10 @@ export default function ProductCard({item}) {
         <div className="flex flex-col w-full gap-2 mt-1">
           <div className="flex flex-col w-full gap-2">
             <span className="text-xl font-semibold leading-tight">
-              {item.title}
+              {item?.title}
             </span>
             <div className="flex items-center gap-x-1">
-              {item.category.map((cat) => (
+              {item?.category?.map((cat) => (
                 <Badge
                   className="w-max"
                   variant="outline"
@@ -70,12 +70,12 @@ export default function ProductCard({item}) {
             </div>
           </div>
           {
-            item.instock ?<div className="flex items-center justify-start gap-2">
+            item?.instock ?<div className="flex items-center justify-start gap-2">
             <span className="text-sm font-semibold line-through mrp">
-              ₹{item.MRP}
+              ₹{item?.MRP}
             </span>
             <span className="text-3xl font-bold price">
-              ₹{item.discountedPrice[0].price}
+              ₹{item?.discountedPrice[0]?.price}
             </span>
           </div>:<div><span className="text-red-600 font-medium">Out of Stock</span> </div>
           }
@@ -85,12 +85,12 @@ export default function ProductCard({item}) {
               className=""
               onClick={() =>
 
-                cookie.token ? handleBuyNow(
+                cookie.token && item?.instock ? handleBuyNow(
                   item,
-                  item.colorsAndImg[0].color,
-                  item.colorsAndImg[0].image,
-                  item.discountedPrice[0].price,
-                  item.discountedPrice[0].size
+                  item?.colorsAndImg[0]?.color,
+                  item?.colorsAndImg[0]?.image,
+                  item?.discountedPrice[0]?.price,
+                  item?.discountedPrice[0]?.size
                 ):navigate("/login")
               }
             >
@@ -101,12 +101,12 @@ export default function ProductCard({item}) {
               variant="outline"
               onClick={() =>
                 cookie.token ? addToCart(
-                  item._id,
+                  item?._id,
                   item,
-                  item.colorsAndImg[0].color,
-                  item.colorsAndImg[0].image,
-                  item.discountedPrice[0].price,
-                  item.discountedPrice[0].size
+                  item?.colorsAndImg[0]?.color,
+                  item?.colorsAndImg[0]?.image,
+                  item?.discountedPrice[0]?.price,
+                  item?.discountedPrice[0]?.size
                 ):navigate("/login")
               }
             >

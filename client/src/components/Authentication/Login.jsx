@@ -44,16 +44,29 @@ const Login = () => {
         const {data: res} = await axios.post(url, data);
 
         if (res && !res.error) {
-          const token = res.token;
-          const cartData = res.cartData;
 
-          const date = new Date();
+          const token = res.token;
+          
+          if (res.admin) {
+            const date = new Date();
+            date.setDate(date.getDate() + 30);
+            window.location.href=res.url
+            setCookie("token", token, {path: "http://localhost:5173", expires: date});
+            
+            
+          }else{
+            const cartData = res.cartData;
+            const date = new Date();
           date.setDate(date.getDate() + 30);
+
+          
 
           setCookie("cart", cartData[0].cart);
           setCookie("token", token, {path: "/", expires: date});
           addDBCartData();
           navigate("/");
+          }
+          
         } else {
           alert(res.error);
         }
